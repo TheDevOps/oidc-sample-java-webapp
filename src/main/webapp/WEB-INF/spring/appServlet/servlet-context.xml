@@ -59,7 +59,9 @@
 
         <security:custom-filter before="PRE_AUTH_FILTER" ref="openIdConnectAuthenticationFilter"/>
 
-        <security:logout/>
+        <security:logout logout-url="/j_spring_security_logout" logout-success-url="/" invalidate-session="true" />
+
+        <security:csrf disabled="true"/>
 
     </security:http>
 
@@ -87,7 +89,7 @@
             These are values from the demo "openid-connect-server-webapp" project of MITREid Connect.
         -->
         <bean class="org.mitre.openid.connect.client.SubjectIssuerGrantedAuthority">
-            <constructor-arg name="subject" value="90342.ASDFJWFA"/>
+            <constructor-arg name="subject" value="admin"/>
             <constructor-arg name="issuer" value="${server.url}"/>
         </bean>
     </util:set>
@@ -233,12 +235,12 @@
                 <property name="tokenEndpointAuthMethod" value="SECRET_BASIC"/>
                 <property name="redirectUris">
                     <set>
-                        <value>https://mmoayyed.unicon.net:9443/simple-web-app/openid_connect_login</value>
+                        <value>https://localhost:8888/simple-web-app/openid_connect_login</value>
                     </set>
                 </property>
                 <!-- for signed requests -->
                 <property name="requestObjectSigningAlg" value="RS256"/>
-                <property name="jwksUri" value="https://mmoayyed.unicon.net:9443/simple-web-app/jwk"/>
+                <property name="jwksUri" value="https://localhost:8888/simple-web-app/jwk"/>
             </bean>
         </property>
         <!--
@@ -265,8 +267,8 @@
             <map>
                 <entry key="${server.url}">
                     <bean class="org.mitre.oauth2.model.RegisteredClient">
-                        <property name="clientId" value="client"/>
-                        <property name="clientSecret" value="secret"/>
+                        <property name="clientId" value="TEST@LOCAL"/>
+                        <property name="clientSecret" value="supersecret"/>
                         <property name="scope">
                             <set value-type="java.lang.String">
                                 <value>openid</value>
@@ -279,65 +281,13 @@
                         <property name="tokenEndpointAuthMethod" value="SECRET_BASIC"/>
                         <property name="redirectUris">
                             <set>
-                                <value>https://mmoayyed.unicon.net:9443/simple-web-app/openid_connect_login</value>
-                            </set>
-                        </property>
-                    </bean>
-                </entry>
-            </map>
-        </property>
-    </bean>
-
-    <!--
-        Hybrid Client Configuration. Tries to configure a client statically first, but if a client isn't found in the map,
-        it will dynamically configure one.
-    -->
-    <bean class="org.mitre.openid.connect.client.service.impl.HybridClientConfigurationService" id="hybridClientConfigurationService">
-        <property name="clients">
-            <map>
-                <entry key="${server.url}">
-                    <bean class="org.mitre.oauth2.model.RegisteredClient">
-                        <property name="clientId" value="client"/>
-                        <property name="clientSecret" value="secret"/>
-                        <property name="scope">
-                            <set value-type="java.lang.String">
-                                <value>openid</value>
-                                <value>email</value>
-                                <value>address</value>
-                                <value>profile</value>
-                                <value>phone</value>
-                            </set>
-                        </property>
-                        <property name="tokenEndpointAuthMethod" value="SECRET_BASIC"/>
-                        <property name="redirectUris">
-                            <set>
-                                <value>https://mmoayyed.unicon.net:9443/simple-web-app/openid_connect_login</value>
+                                <value>https://localhost:8888/simple-web-app/openid_connect_login</value>
                             </set>
                         </property>
 
                     </bean>
                 </entry>
             </map>
-        </property>
-        <property name="template">
-            <bean class="org.mitre.oauth2.model.RegisteredClient">
-                <property name="clientName" value="Simple Web App"/>
-                <property name="scope">
-                    <set value-type="java.lang.String">
-                        <value>openid</value>
-                        <value>email</value>
-                        <value>address</value>
-                        <value>profile</value>
-                        <value>phone</value>
-                    </set>
-                </property>
-                <property name="tokenEndpointAuthMethod" value="SECRET_BASIC"/>
-                <property name="redirectUris">
-                    <set>
-                        <value>https://mmoayyed.unicon.net:9443/simple-web-app/openid_connect_login</value>
-                    </set>
-                </property>
-            </bean>
         </property>
         <!--
             Registered Client Service. Uncomment this to save dynamically registered clients out to a
